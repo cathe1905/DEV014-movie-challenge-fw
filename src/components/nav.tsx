@@ -1,4 +1,3 @@
-import React from 'react';
 import '../styles/navBar.css'; // Asegúrate de tener tu archivo de estilos CSS para personalizar el Navbar
 
 const Navbar = () => {
