@@ -1,0 +1,11 @@
+.spectral-extrabold {
+    font-family: "Spectral", serif;
+    font-weight: 800;
+    font-style: normal;
+    font-size: 2rem;
+}
+@media (min-width: 768px) {
+    .spectral-extrabold {
+        font-size: 4rem;
+    }  
+}

@@ -1,0 +1,13 @@
+:root {
+    --bodyColor: #050E2F; 
+    --color-boton: #eb2d3d;
+}
+
+body {
+    background-color: black !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+
+
