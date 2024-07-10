@@ -13,7 +13,6 @@ export class Services{
           const data = await response.json();
 
           const movies = data.results.map((movie: any) => formatMovie(movie));
-          console.log(movies)
           return movies;
         } catch (error) {
           console.error('Error fetching movies:');

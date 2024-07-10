@@ -27,7 +27,7 @@ describe('formatMovie', () => {
   
       const expectedMovie: Movie = {
         title: '',
-        post: '',
+        poster_path: '',
         year: 2023,
       };
   
@@ -52,7 +52,7 @@ describe('formatMovie', () => {
   
       const expectedMovie: Movie = {
         title: '',
-        post: '',
+        poster_path: '',
         year: NaN,
       };
   

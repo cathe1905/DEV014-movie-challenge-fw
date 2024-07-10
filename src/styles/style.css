@@ -9,5 +9,18 @@ body {
     font-weight: 600 !important;
 }
 
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    height: 50vh; /* Altura completa de la ventana */
+}
+
+.large-spinner {
+    width: 500px;  /* Ancho del Spinner */
+    height: 500px; /* Alto del Spinner */
+}
+
+
 
 
