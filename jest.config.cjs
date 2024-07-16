@@ -11,4 +11,6 @@ module.exports = {
     "^.+\\.module\\.css$": "identity-obj-proxy",
     "^.+\\.(css|png|jpg|jpeg|svg)$": "<rootDir>/src/__mocks__/file-mock.cjs",
   },
+  // setupFiles: ['./jest.setup.js'],
+  // setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 };
