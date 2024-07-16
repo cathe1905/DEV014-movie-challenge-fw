@@ -18,5 +18,4 @@ describe('MovieCard', () => {
     expect(screen.getByAltText('Poster')).toHaveAttribute('src', '/path/to/poster.jpg');
   });
 
-  it('')
 });
