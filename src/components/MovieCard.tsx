@@ -6,12 +6,13 @@ interface MovieCardProps {
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
-    const { title, poster_path, year } = movie;
+    const { poster_path} = movie;
+     const defaultImage= 'public/images.png'
 
     return (
         <div className='text-center'>
-            <img className='custom-img' src={poster_path} alt="Poster" />
-            <p>{title}, {year}</p>
+            <img className='custom-img' src={poster_path} alt="Poster" onError={(e) => {
+          e.currentTarget.src = defaultImage;}}/>
         </div>
     );
 };

@@ -7,24 +7,42 @@ import PaginationComponent from "./Pagination";
 import { Services } from "../services/APIService";
 import { Movie } from '../models/Movie';
 import { useSearchParams } from 'react-router-dom';
-import SelectComponent from './Select';
+import ListOptions from './ListOptions';
+import getMovieGenres from '../services/movieService';
+import {formatGenresToMap, formatGenresToOptions} from '../utils/transformers'
 
 const Home: React.FC = () => {
     const [movies, setMovies] = useState<Movie[]>([]);
+    const [genreMap, setGenreMap] = useState<Map<number, string>>(new Map());
+    const [genreOptions, setGenreOptions] = useState<{ value: string; label: string }[]>([]);
+    const sortOptions= [{value: 'popularity.asc', label:'Popularity - Asc.'}, {value: 'popularity.desc', label:'Popularity - Desc.'}]
     const services = new Services();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
     const [params, setParams] = useSearchParams()
-    const page = parseInt(params.get('page') || '1', 10);
+    const page = parseInt(params.get('page') || '1');
+    const genre= params.get('genre')
+    const sort_by= params.get('sort_by')
+    const [selectedGenre, setSelectedGenre] = useState<{ value: string; label: string } > ({ value: '0', label: '' });
+    const [selectedSort, setSelectedSort] = useState<{ value: string; label: string }>({ value: '', label: '' });
 
     useEffect(() => {
-        const fetchMovies = async (page: number = 1) => {
+        const fetchMovies = async () => {
             try {
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                const { movies, metaData } = await services.getMovies({ filters: { page } });
+
+                const genresArray = await getMovieGenres();
+                const genresMap = formatGenresToMap(genresArray);
+                setGenreMap(genresMap);
+
+                const genreOptions = formatGenresToOptions(genresArray);
+                setGenreOptions(genreOptions);
+
+                
+                const { movies} = await services.getMovies({ filters: { page } }, genresMap, genreId, sortValue);
                 setMovies(movies);
-                setTotalPages(metaData.pagination.totalPages - 2);
+                setTotalPages(500);
                 setIsLoading(false);
             } catch (error) {
                 setIsLoading(false);
@@ -33,10 +51,33 @@ const Home: React.FC = () => {
             }
         };
 
-        fetchMovies(page);
-    }, [params]);
+        const genreId = selectedGenre ? parseInt(selectedGenre.value) : null;
+        const sortValue= selectedSort ? selectedSort.value : null
+        fetchMovies();
+    }, [params, selectedGenre, selectedSort]);
 
     const handelSelectPage = (page: number) => {
+        setParams({genre: selectedGenre.label, sort_by: selectedSort.value, page: page.toString()})
+    };
+
+
+    const handleOnChange = (option: { value: string; label: string }, type: string) => {
+        if (type === 'genre') {
+            setSelectedGenre(option); 
+            setParams({genre: option.label,sort_by: selectedSort.value, page: page.toString()})
+        } else if (type === 'sort') {
+            setSelectedSort(option);
+            setParams({genre: selectedGenre.label, sort_by: option.value, page: page.toString()})
+        }
+        
+    };
+
+    const handleOnClear = (type: string) => {
+        if (type === 'genre') {
+            setSelectedGenre(null);
+        } else if (type === 'sort') {
+            setSelectedSort(null);
+        }
         setParams({ page: page.toString() })
     };
 
@@ -45,7 +86,23 @@ const Home: React.FC = () => {
             <Navbar />
             <div>
                 <CarouselFadeExample />
-                < SelectComponent/>
+                <div className="container-lg d-flex justify-content-center justify-content-md-start my-4 my-md-5 px-md-5">
+                <ListOptions
+                        options={genreOptions}
+                        selectedOption={selectedGenre}
+                        onChange={(option) => handleOnChange(option, 'genre')}
+                        onClear={() => handleOnClear('genre')} 
+                        tipo='genre'              
+                    />
+                    <ListOptions
+                        options={sortOptions}
+                        selectedOption={selectedSort}
+                        onChange={(option) => handleOnChange(option, 'sort')}
+                        onClear={() => handleOnClear('sort')} 
+                        tipo='sort'              
+                    />
+                </div>
+        
             </div>
             <div className="container-lg my-2">
                 <div>

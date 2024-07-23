@@ -10,8 +10,9 @@ describe('MovieCard', () => {
       title: 'The Collection',
       poster_path: '/path/to/poster.jpg',
       year: 2023,
+      genres: ['comedy']
     };
-
+    console.log(movieTest.poster_path)
     render(<MovieCard movie={movieTest} />);
 
     expect(screen.getByText('The Collection, 2023')).toBeInTheDocument();
