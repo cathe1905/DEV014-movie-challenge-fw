@@ -10,7 +10,7 @@ const MovieList: React.FC<MovieCardProps> = ({ movie }) => {
     return (
         <ul data-testid="movie-list" className='row ms-0 ps-0' >
             {movie.map((movie) => (
-                <li key={movie.title} className='col-6 col-md-4 col-lg-3 list-unstyled'>
+                <li key={movie.id_movie} className='col-6 col-md-4 col-lg-3 list-unstyled my-3'>
                     <MovieCard movie={movie} />
                 </li>
             ))}

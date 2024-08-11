@@ -8,8 +8,10 @@ import { Services } from "../services/APIService";
 import { Movie } from '../models/Movie';
 import { useSearchParams } from 'react-router-dom';
 import ListOptions from './ListOptions';
-import getMovieGenres from '../services/movieService';
+import {getMovieGenres} from '../services/movieService';
 import {formatGenresToMap, formatGenresToOptions} from '../utils/transformers'
+import SearchForm from './SearchForm';
+
 
 const Home: React.FC = () => {
     const [movies, setMovies] = useState<Movie[]>([]);
@@ -22,10 +24,12 @@ const Home: React.FC = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [params, setParams] = useSearchParams()
     const page = parseInt(params.get('page') || '1');
-    const genre= params.get('genre')
-    const sort_by= params.get('sort_by')
-    const [selectedGenre, setSelectedGenre] = useState<{ value: string; label: string } > ({ value: '0', label: '' });
-    const [selectedSort, setSelectedSort] = useState<{ value: string; label: string }>({ value: '', label: '' });
+    const genreP= params.get('genre');
+    const sortP= params.get('sort_by');
+    const [selectedGenre, setSelectedGenre] = useState<{ value: string; label: string } | null>(null);
+    const [selectedSort, setSelectedSort] = useState<{ value: string; label: string } | null> (null);
+    const [selectedSearch, setSelectedSearch] = useState<string | null> (null);
+
 
     useEffect(() => {
         const fetchMovies = async () => {
@@ -39,8 +43,7 @@ const Home: React.FC = () => {
                 const genreOptions = formatGenresToOptions(genresArray);
                 setGenreOptions(genreOptions);
 
-                
-                const { movies} = await services.getMovies({ filters: { page } }, genresMap, genreId, sortValue);
+                const { movies} = await services.getMovies({ filters: { page } }, genreMap, genreId, sortValue, searchValue);
                 setMovies(movies);
                 setTotalPages(500);
                 setIsLoading(false);
@@ -51,25 +54,28 @@ const Home: React.FC = () => {
             }
         };
 
-        const genreId = selectedGenre ? parseInt(selectedGenre.value) : null;
-        const sortValue= selectedSort ? selectedSort.value : null
+        const genreId = genreP ? parseInt(genreP) : selectedGenre ? parseInt(selectedGenre.value) : null;
+        const sortValue= sortP ? sortP :   selectedSort ? selectedSort.value : null;
+        const searchValue= selectedSearch ? selectedSearch: null;
         fetchMovies();
-    }, [params, selectedGenre, selectedSort]);
+    }, [params, selectedGenre, selectedSort, selectedSearch]);
 
     const handelSelectPage = (page: number) => {
-        setParams({genre: selectedGenre.label, sort_by: selectedSort.value, page: page.toString()})
+        const genre = selectedGenre ? selectedGenre.value : '';
+        const sortBy = selectedSort ? selectedSort.value : '';
+        setParams({ genre, sort_by: sortBy, page: page.toString() });
     };
-
 
     const handleOnChange = (option: { value: string; label: string }, type: string) => {
         if (type === 'genre') {
-            setSelectedGenre(option); 
-            setParams({genre: option.label,sort_by: selectedSort.value, page: page.toString()})
+            setSelectedGenre(option);
+            const sortBy = selectedSort ? selectedSort.value : '';
+            setParams({ genre: option.value, sort_by: sortBy, page: '1' });
         } else if (type === 'sort') {
             setSelectedSort(option);
-            setParams({genre: selectedGenre.label, sort_by: option.value, page: page.toString()})
+            const genre = selectedGenre ? selectedGenre.value : '';
+            setParams({ genre, sort_by: option.value, page: '1' });
         }
-        
     };
 
     const handleOnClear = (type: string) => {
@@ -77,31 +83,50 @@ const Home: React.FC = () => {
             setSelectedGenre(null);
         } else if (type === 'sort') {
             setSelectedSort(null);
+        } else if(type === 'search'){
+            setSelectedSearch(null);
         }
         setParams({ page: page.toString() })
     };
 
+    const handleSearchSubmit = (term: string) => {
+        setSelectedSearch(term);
+      };
+
     return (
-        <div>
+        <div className='home mt-0'>
             <Navbar />
             <div>
                 <CarouselFadeExample />
-                <div className="container-lg d-flex justify-content-center justify-content-md-start my-4 my-md-5 px-md-5">
-                <ListOptions
-                        options={genreOptions}
-                        selectedOption={selectedGenre}
-                        onChange={(option) => handleOnChange(option, 'genre')}
-                        onClear={() => handleOnClear('genre')} 
-                        tipo='genre'              
-                    />
-                    <ListOptions
-                        options={sortOptions}
-                        selectedOption={selectedSort}
-                        onChange={(option) => handleOnChange(option, 'sort')}
-                        onClear={() => handleOnClear('sort')} 
-                        tipo='sort'              
-                    />
+                <div className="container-lg my-4 my-md-5 px-md-5">
+                    <div className="row justify-content-center justify-content-md-center ">
+                        <div className="col-6 col-md-3 mb-3 align-items-md-center d-md-flex">
+                            <ListOptions 
+                                options={genreOptions}
+                                selectedOption={selectedGenre}
+                                onChange={(option) => handleOnChange(option, 'genre')}
+                                onClear={() => handleOnClear('genre')} 
+                                tipo="genre"            
+                            />
+                        </div>
+                        <div className="col-6 col-md-3 mb-3 align-items-md-center d-md-flex">
+                            <ListOptions
+                                options={sortOptions}
+                                selectedOption={selectedSort}
+                                onChange={(option) => handleOnChange(option, 'sort')}
+                                onClear={() => handleOnClear('sort')} 
+                                tipo="sort"              
+                            />
+                        </div>
+                        <div className="col-12 col-md-6 mb-3 justify-content-md-center">
+                            <SearchForm 
+                                onSearchSubmit={handleSearchSubmit}
+                                onClear={() => handleOnClear('search')} 
+                            />
+                        </div>
+                    </div>
                 </div>
+
         
             </div>
             <div className="container-lg my-2">
@@ -130,6 +155,7 @@ const Home: React.FC = () => {
                     />
                 )}
             </div>
+
         </div>
     );
 };

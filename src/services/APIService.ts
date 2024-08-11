@@ -5,10 +5,19 @@ import { token } from "./token.ts";
 type GenreMap = Map<number, string>;
 export class Services{
 
-    async getMovies({ filters: { page= 1 }} :{ filters: { page?: number } }, genremap:GenreMap, genreId: number | null, sortBy: string | null ): Promise<{ metaData: { pagination: { currentPage: number, totalPages: number } }, movies: Movie[] }> {
-
+    async getMovies({ filters: { page= 1 }} :{ filters: { page?: number } }, genremap:GenreMap, genreId: number | null, sortBy: string | null, term: string | null ): Promise<{ metaData: { pagination: { currentPage: number, totalPages: number } }, movies: Movie[] }> {
+      console.log(genremap, genreId, sortBy, term)
         try {
-          let url= `https://api.themoviedb.org/3/discover/movie?page=${page}`
+          let type=''
+
+          if(term !== null){
+            type= 'search'
+          } else{
+            type= 'discover'
+          }
+
+          let url= `https://api.themoviedb.org/3/${type}/movie?query=${term}`
+
 
           if (genreId !== null && genreId !== 0) {
             url += `&with_genres=${genreId}`
@@ -16,7 +25,8 @@ export class Services{
           if(sortBy !== null && sortBy !== ''){
             url += `&sort_by=${sortBy}`
           }
-          console.log(url)
+          url+= `&page=${page}`
+
           const response = await fetch(url, {
             method: 'GET',
             headers: {
@@ -29,15 +39,6 @@ export class Services{
             throw new Error('Failed to fetch movies');
           }
           const data = await response.json();
-          
-          // let finalData;
-
-          // if(genreId !== null){
-          //   finalData= data.results.filter((movie: { genre_ids: (number | null)[]; }) => movie.genre_ids.includes(genreId))
-          // } else{
-          //   finalData= data.results;
-          // }
-
 
          const movies = data.results.map((movie: any) => formatMovie(movie, genremap));
           const metaData= {
@@ -46,7 +47,7 @@ export class Services{
               totalPages: data.total_pages
             }
           };
-
+          console.log(movies)
           return { metaData, movies };
         } catch (error) {
 

@@ -28,7 +28,7 @@ const ListOptions: React.FC<Props> = ({ options, selectedOption, onChange, onCle
 
     return (
         <>
-            <select className="mx-2 me-md-4" value={selectedOption?.value || ""} onChange={handleChange}>
+            <select className=" mx-1 ancho" value={selectedOption?.value || ""} onChange={handleChange}>
                 <option value="" disabled>
                 {tipo === 'sort' ? 'Sort by' : 'Filter by Genre'}
                 </option>
@@ -36,7 +36,7 @@ const ListOptions: React.FC<Props> = ({ options, selectedOption, onChange, onCle
                     <option key={index} value={opt.value}>{opt.label}</option>
                 ))}
             </select>
-            <button className="btn btn-primary mx-2" onClick={handleClear}>Clear</button>
+            <button className="btn btn-primary clear ms-1" onClick={handleClear}>Clear</button>
         </>
 
 
