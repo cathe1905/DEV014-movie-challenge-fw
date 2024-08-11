@@ -1,5 +1,8 @@
 import { token } from "./token";
-const getMovieGenres = async (): Promise<{ id: number; name: string }[]> => {
+import { Movie } from "../models/Movie";
+import {formatMovie} from "../utils/transformers.ts"
+
+export const getMovieGenres = async (): Promise<{ id: number; name: string }[]> => {
     try {
         const response= await fetch('https://api.themoviedb.org/3/genre/movie/list?', {
             method: 'GET',
@@ -25,5 +28,28 @@ const getMovieGenres = async (): Promise<{ id: number; name: string }[]> => {
     }
     
 }
+type GenreMap = Map<number, string>;
+export const getMovieDetail = async (movie_id: number, genremap: GenreMap): Promise<Movie> => {
+    try {
+        const url= `https://api.themoviedb.org/3/movie/${movie_id}`
 
-export default getMovieGenres
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if(!response.ok){
+            throw new Error('Failed to fetch movies');
+        }
+        const data = await response.json();
+        data.genre_ids = data.genres.map((el: {id: number, name: string}) => el.id);
+
+        const movie= formatMovie(data, genremap)
+        console.log(movie)
+        return movie
+    } catch(error){
+        throw error
+    }
+}

@@ -1,0 +1,38 @@
+.background-container {
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+    color: white;
+    height: 100vh;
+
+}
+.button-play{
+    background-color: #EB7D2D;
+    color: white;
+    font-weight: 800;
+    border-radius: .3rem;
+    font-size: 1rem;
+    padding: .5rem 1rem;
+}
+
+.w-parrafo{
+    width: 100%;
+    font-size: 1rem;
+    text-align: justify;
+} 
+@media (min-width: 768px) {
+    .w-parrafo{
+        width: 60%;
+        font-size: 1.4rem;
+    } 
+}
+
+.group-p{
+    font-size: 0.8rem;
+}
+
+@media (min-width: 768px) {
+    .group-p{
+        font-size: 1.1rem;
+    }
+}

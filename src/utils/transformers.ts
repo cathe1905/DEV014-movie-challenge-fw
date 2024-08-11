@@ -8,6 +8,10 @@ export function formatMovie(obj: any, genremap:GenreMap ): Movie{
   const genres_num= obj.genre_ids.map((item: number) => {
     return genremap.get(item) || "Unknown";
   })
+  const back_img= obj.backdrop_path || ""
+  const overview= obj.overview || ""
+  const minutes= obj.runtime
+  const id= obj.id
 
   let year;
   try {
@@ -24,7 +28,11 @@ export function formatMovie(obj: any, genremap:GenreMap ): Movie{
     title: name,
     poster_path: `https://image.tmdb.org/t/p/original${img}`,
     year: year,
-    genres: genres_num
+    genres: genres_num,
+    background: `https://image.tmdb.org/t/p/original${back_img}`,
+    description: overview,
+    duration: minutes,
+    id_movie: id
   };
 
   return movie;

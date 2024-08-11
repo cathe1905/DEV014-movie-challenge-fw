@@ -1,24 +1,33 @@
+/* * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+} */
 :root {
     --bodyColor: #050E2F; 
     --color-boton: #eb2d3d;
 }
+body{
+    margin: 0;
+}
 
-body {
+.home {
     background-color: black !important;
     color: white !important;
     font-weight: 600 !important;
+    
 }
 
 .spinner-container {
     display: flex;
     justify-content: center;
     align-items:center;
-    height: 50vh; /* Altura completa de la ventana */
+    height: 50vh; 
 }
 
 .large-spinner {
-    width: 500px;  /* Ancho del Spinner */
-    height: 500px; /* Alto del Spinner */
+    width: 500px; 
+    height: 500px; 
 }
 
 
