@@ -94,7 +94,7 @@ const Home: React.FC = () => {
       };
 
     return (
-        <div className='home mt-0'>
+        <div className='home mt-0 mb-0'>
             <Navbar />
             <div>
                 <CarouselFadeExample />

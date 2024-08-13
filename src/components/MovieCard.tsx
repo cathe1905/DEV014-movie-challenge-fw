@@ -16,8 +16,8 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
       };
 
     return (
-        <a onClick={() => handleClick(id_movie)} className='text-center'>
-           <img className='custom-img' src={poster_path} alt="Poster" onError={(e) => {
+        <a onClick={() => handleClick(id_movie)} className='d-flex justify-content-center'>
+           <img className='custom-img ' src={poster_path} alt="Poster" onError={(e) => {
           e.currentTarget.src = defaultImage;}}/>
         </a>
 

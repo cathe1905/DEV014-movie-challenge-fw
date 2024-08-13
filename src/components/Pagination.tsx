@@ -35,10 +35,11 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, 
 
   for (let i = start; i <= end; i++) {
     items.push(
-      <Pagination.Item
+      <Pagination.Item className='page-item'
         key={i}
         active={i === currentPage}
         onClick={() => onSelectPage(i)}
+        
       >
         {i}
       </Pagination.Item>
@@ -46,13 +47,15 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({ currentPage, 
   }
 
   return (
-    <Pagination className='d-flex justify-content-center'>
-      <Pagination.First onClick={() => onSelectPage(1)} disabled={currentPage === 1} />
-      <Pagination.Prev onClick={() => onSelectPage(currentPage > 1 ? currentPage - 1 : 1)} disabled={currentPage === 1} />
-      {items}
-      <Pagination.Next onClick={() => onSelectPage(currentPage < totalPages ? currentPage + 1 : totalPages )  }disabled={currentPage === totalPages}  />
-      <Pagination.Last onClick={() => onSelectPage(totalPages)} disabled={currentPage === totalPages} />
-    </Pagination>
+    <div className="pagination-container">
+      <Pagination className='d-flex justify-content-center mx-2 fuente'>
+        <Pagination.First className='page-item' onClick={() => onSelectPage(1)} disabled={currentPage === 1} />
+        <Pagination.Prev className='page-item' onClick={() => onSelectPage(currentPage > 1 ? currentPage - 1 : 1)} disabled={currentPage === 1} />
+        {items}
+        <Pagination.Next className='page-item' onClick={() => onSelectPage(currentPage < totalPages ? currentPage + 1 : totalPages )  }disabled={currentPage === totalPages}  />
+        <Pagination.Last className='page-item' onClick={() => onSelectPage(totalPages)} disabled={currentPage === totalPages}  />
+      </Pagination>
+    </div>
   );
 };
 
